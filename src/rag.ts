@@ -1,4 +1,4 @@
-import { llama } from "./config"
+import { modelo } from "./config"
 import { getContext } from "./client/config"
 
 function montarMensagens(pergunta: string, contexto: string) {
@@ -13,7 +13,7 @@ function montarMensagens(pergunta: string, contexto: string) {
 
 export async function perguntar(pergunta: string) {
     const contexto = await getContext(pergunta)
-    const resposta = await llama.invoke(montarMensagens(pergunta, contexto))
+    const resposta = await modelo.invoke(montarMensagens(pergunta, contexto))
 
     const usage = resposta.usage_metadata
     const tokens = {
