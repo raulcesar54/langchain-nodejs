@@ -1,0 +1,24 @@
+# Dependências
+node_modules/
+
+# Build
+dist/
+
+# Variáveis de ambiente (contêm chaves de API)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Dados do ChromaDB
+chroma/
+chroma_data/
+
+# Sistema / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
