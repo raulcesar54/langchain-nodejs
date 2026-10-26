@@ -15,7 +15,7 @@ API de RAG (Retrieval-Augmented Generation) em TypeScript. Faz upload de PDFs, g
 - Node.js 18+
 - Docker (para o ChromaDB)
 - [Ollama](https://ollama.com) com o modelo `deepseek-r1:7b` (`ollama pull deepseek-r1:7b`)
-- Chave da API da Anthropic (opcional, conforme o modelo usado)
+- Chave da API da Anthropic **ou** o modelo `qwen3` no Ollama (para o agente)
 
 ## Configuração
 
@@ -26,8 +26,25 @@ cp .env.example .env   # preencha as variáveis
 
 | Variável            | Descrição                                |
 | ------------------- | ---------------------------------------- |
-| `ANTHROPIC_API_KEY` | Chave da API da Anthropic                |
+| `ANTHROPIC_API_KEY` | Chave da API da Anthropic (opcional, veja abaixo) |
+| `ANTHROPIC_MODEL`   | Modelo Claude do agente (padrão: `claude-haiku-4-5`) |
+| `OLLAMA_MODEL`      | Modelo Ollama do agente (padrão: `qwen3`) |
 | `CHROMA_DB_URL`     | URL do ChromaDB (ex.: `http://localhost:8000`) |
+
+### Modelo do agente (Anthropic ou Ollama)
+
+O agente (LangGraph) escolhe o modelo automaticamente em `src/agente/modelo.ts`:
+
+- **`ANTHROPIC_API_KEY` preenchida no `.env`** → usa o Claude (`ANTHROPIC_MODEL`).
+- **`ANTHROPIC_API_KEY` vazia ou ausente** → usa o Ollama local (`OLLAMA_MODEL`).
+
+Para usar o Ollama, baixe um modelo com suporte a *tool calling*:
+
+```bash
+ollama pull qwen3
+```
+
+> O `deepseek-r1:7b` (usado na rota `/perguntar`) **não** suporta tool calling, por isso o agente usa outro modelo.
 
 ## Executando
 
@@ -63,7 +80,10 @@ src/
 ├── rag.ts      # lógica de recuperação e resposta
 ├── treinar.ts  # indexação de PDFs no ChromaDB
 ├── pdf.ts      # leitura de PDFs
-└── swagger.ts  # especificação OpenAPI
+├── swagger.ts  # especificação OpenAPI
+└── agente/
+    ├── modelo.ts  # escolhe Claude (se houver ANTHROPIC_API_KEY) ou Ollama
+    └── tools.ts   # ferramentas do agente (RAG, calculadora, data/hora)
 ```
 
 ## Sobre o projeto
